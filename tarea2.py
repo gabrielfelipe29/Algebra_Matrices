@@ -82,29 +82,27 @@ def crear_imagen_matriz(nombre, matriz):
 def convertir_a_grises(nombre, matriz):
     try:
         # Calcular el promedio simple de los valores RGB para cada píxel
-        A_gris = np.mean(matriz, axis=2)
+        matriz_gris = np.mean(matriz, axis=2)
 
         # Asegurarse de que los valores estén en el rango [0, 255] y convertir a enteros
-        A_gris_normalizada = A_gris.astype(np.uint8)
-        #A_gris_normalizada = np.clip(A_gris, 0, 255)
+        matriz_gris_normalizada = matriz_gris.astype(np.uint8)
 
         # Crear una nueva imagen a partir de la matriz en escala de grises
-        imagen_gris = Image.fromarray(A_gris_normalizada)
+        imagen_gris = Image.fromarray(matriz_gris_normalizada)
 
         # Guardar la nueva imagen
         imagen_gris.save(nombre)
 
-        return A_gris_normalizada
+        return matriz_gris_normalizada
     except Exception as e:
         print("Algo falló al convertir la imagen", str(e))
 
 # Funcion para calcular el detemrinante    
 def calcular_determinante(matriz): 
-    # Verificar si la matriz es cuadrada
-    try:        
-        if matriz.ndim == 2 and matriz.shape[0] == matriz.shape[1]:
-            return np.linalg.det(matriz)
-        
+    try:      
+        # Retornamos el determinante de la matriz  
+        return np.linalg.det(matriz)
+
     except Exception as e:
         print("Algo falló al calcular el determinante:", str(e))
         return None
@@ -134,7 +132,7 @@ def obtener_identidad(matriz):
         if matriz.ndim == 2 and matriz.shape[0] == matriz.shape[1]:
             return np.eye(matriz.shape[0])
             
-        
+        return "Debe ser una matriz cuadrada"
     except Exception as e:
         print("Algo falló al intentar encontrar la identidad:", str(e))
         return None
@@ -144,12 +142,18 @@ def obtener_identidad(matriz):
 def rotar_img(matriz1, matriz2, nombre):
     try:  
 
+        # Para hacer la multiplicación, la primera debe tener tantas filas
+        # como columnas tenga la segunda para poder realizar esta operación.
+
+        if matriz1.shape[0] != matriz2.shape[1]:
+            return "La primera debe tener tantas filas como columnas tiene la segunda"
+
         # Hacemos la multplicación
         matriz_res = np.dot(matriz1, matriz2)
 
         # Crear una nueva imagen a partir de la matriz en escala de grises
-        imagen_volteada_1 = Image.fromarray(matriz_res.astype(np.uint8), mode="L")
-        imagen_volteada_1.save(nombre)
+        imagen_volteada = Image.fromarray(matriz_res.astype(np.uint8), mode="L")
+        imagen_volteada.save(nombre)
         return True   
     except Exception as e:
         print("Algo falló al aplicar el contraste:", str(e))
