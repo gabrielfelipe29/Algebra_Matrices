@@ -173,119 +173,125 @@ def negativo_imagen(matriz, nombre):
 
 def run():
 
-    # Cargo las dos imagenes e imprimo sus tamaños
-    ruta_1='img_python.jpg'
-    ruta_2='img_rattlesnake.jpg'   
-    img_1=cargar_imagen(ruta_1)
-    tamaño_1=obtener_tamaño(img_1)
-    print(f"Tamaño {ruta_1} es de {tamaño_1}")
-    img_2=cargar_imagen(ruta_2)
-    tamaño_2=obtener_tamaño(img_2)
-    print(f"Tamaño {ruta_2} es de {tamaño_2}")
+    try:
+
+        # Cargo las dos imagenes e imprimo sus tamaños
+        ruta_1='img_python.jpg'
+        ruta_2='img_rattlesnake.jpg'   
+        img_1=cargar_imagen(ruta_1)
+        tamaño_1=obtener_tamaño(img_1)
+        print(f"Tamaño {ruta_1} es de {tamaño_1}")
+        img_2=cargar_imagen(ruta_2)
+        tamaño_2=obtener_tamaño(img_2)
+        print(f"Tamaño {ruta_2} es de {tamaño_2}")
+        
+        # Obtiene el tamaño minimo de la fila de las dos imagenes
+        tamaño_n = obtener_tamaño_cuadrado(tamaño_1, tamaño_2)
+        print(f"Imagen cuadrada de n = {tamaño_n}")
+
+        # Recorto la primera imagen
+        recortar_imagen_v2(ruta_1, 'img_1_cuadrada.jpg',0,tamaño_n,0,tamaño_n)
+
+        # Recorto la segunda imagen
+        recortar_imagen_v2(ruta_2, 'img_2_cuadrada.jpg',0,tamaño_n,0,tamaño_n)
+
+        # Para realizar ciertas operaciones entre las dos imagenes, como multiplicación de matrices, 
+        # es necesario que estás tengan la misma dimensión. Por está razón las hacemos cuadradas.
+
+        # Selecciono una de las imagenes recortadas y la cargo
+        img_2_cuadrada=cargar_imagen('img_2_cuadrada.jpg')
+        img_1_cuadrada=cargar_imagen('img_1_cuadrada.jpg')
+
+        # Imprimo su tamaño
+        print(f"Tamaño de una de las matrices recortadas: {obtener_tamaño(img_2_cuadrada)}")
+
+        # La muestro como matriz
+        print(f"Mostrarla como matriz:\n")
+        print(img_2_cuadrada)
+
+        # Traspongo img_1_cuadrada
+        print("Transponer img_1_cuadrada y mostrarla como matriz:\n")
+        img_1_cuadrada_traspuesta=trasponer_matriz(img_1_cuadrada)
+        
+        # La imprimo
+        print(img_1_cuadrada_traspuesta)
+
+        # Genero una nueva imagen a partir de la traspuesta
+        crear_imagen_matriz('img_1_cuadrada_trapuesta.jpg', img_1_cuadrada_traspuesta)
+
+        # Traspongo img_2_cuadrada
+        print("Transponer img_2_cuadrada y mostrarla como matriz:\n")
+        img_2_cuadrada_traspuesta=trasponer_matriz(img_2_cuadrada)
+
+        # La imprimo
+        print(img_2_cuadrada_traspuesta)
+
+        # Genero una nueva imagen a partir de la traspuesta
+        crear_imagen_matriz('img_2_cuadrada_trapuesta.jpg', img_2_cuadrada_traspuesta)
+        
+        # Convierte la img_1_cuadrada a escala de grises
+        img_1_cuadrada_gris = convertir_a_grises('img_1_cuadrada_gris.jpg',img_1_cuadrada)
+
+        # Convierte la img_2_cuadrada a escala de grises
+        img_2_cuadrada_gris = convertir_a_grises('img_2_cuadrada_gris.jpg',img_2_cuadrada)
+
+        # Pasamos a calcular los determinantes
+        det_img_1_gris=calcular_determinante(img_1_cuadrada_gris)
+        det_img_2_gris=calcular_determinante(img_2_cuadrada_gris)
+        print(f'Determinante de img_1_cuadrada_gris.jpg es de {det_img_1_gris}')
+        print(f'Determinante de img_2_cuadrada_gris.jpg es de {det_img_2_gris}')
+
+        # Para que una matriz se invertible, su determinante debe ser distinto de 0
+        img_1_invertible = " si " if det_img_1_gris != 0 else " no"
+        img_2_invertible = " si " if det_img_2_gris != 0 else " no"
+
+        # Imprimimos si cada matriz es invertible o no
+        print(f"La matriz de la imagen img_1_cuadrada_gris.jpg {img_1_invertible} es invertible")
+        print(f"La matriz de la imagen img_2_cuadrada_gris.jpg {img_2_invertible} es invertible")
+
+        # Ahora pasamos a calcular la inversa, si es que tienen
+        if det_img_1_gris != 0:
+            inversa_img_1 = np.linalg.inv(img_1_cuadrada_gris)
+            print(f"La inversa de img_1_cuadrada_gris.jgp es {inversa_img_1}")
+        
+        if det_img_2_gris != 0:
+            inversa_img_2 = np.linalg.inv(img_2_cuadrada_gris)
+            print(f"La inversa de img_2_cuadrada_gris.jgp es {inversa_img_2}")
+
+        # Pasamos a multiplicar la matriz de grieses de la imagen 1 por un escalar a1 = 5
+        valor = 2
+        matriz_por_a1 = aplicar_contraste(f"img_1_por_{valor}.jpg", valor, img_1_cuadrada_gris )
+        print(f"Matriz resultante de la multiplicación por {valor} de la matriz de la img 1 {matriz_por_a1}")
     
-    # Obtiene el tamaño minimo de la fila de las dos imagenes
-    tamaño_n = obtener_tamaño_cuadrado(tamaño_1, tamaño_2)
-    print(f"Imagen cuadrada de n = {tamaño_n}")
+        # Pasamos a multiplicar la matriz de grieses de la imagen 1 por un escalar a2 = 0.5
+        valor = 0.9
+        matriz_por_a2 = aplicar_contraste(f"img_2_por_{valor}.jpg", valor, img_2_cuadrada_gris )
+        print(f"Matriz resultante de la multiplicación por {valor} de la matriz de la img 2 {matriz_por_a2}")
+        
+        """ Cuanto más se aleja el valor a de 1 se distorsiona la imagen original
+        perdiendose el contorno del objeto y su forma base
 
-    # Recorto la primera imagen
-    recortar_imagen_v2(ruta_1, 'img_1_cuadrada.jpg',0,tamaño_n,0,tamaño_n)
+        En el caso que 0 < a < 1 no se llega a formar la imagen, sino que se ven trazos 
+        de líneas en forma de diagonal
+        """
+        
+        # Ahora pasamos a comprobar que la multiplicación no es conmutativa
+        identidad = obtener_identidad(img_1_cuadrada_gris)
 
-    # Recorto la segunda imagen
-    recortar_imagen_v2(ruta_2, 'img_2_cuadrada.jpg',0,tamaño_n,0,tamaño_n)
+        matriz_w = np.fliplr(identidad)
 
-    # Para realizar ciertas operaciones entre las dos imagenes, como multiplicación de matrices, 
-    # es necesario que estás tengan la misma dimensión. Por está razón las hacemos cuadradas.
-
-    # Selecciono una de las imagenes recortadas y la cargo
-    img_2_cuadrada=cargar_imagen('img_2_cuadrada.jpg')
-    img_1_cuadrada=cargar_imagen('img_1_cuadrada.jpg')
-
-    # Imprimo su tamaño
-    print(f"Tamaño de una de las matrices recortadas: {obtener_tamaño(img_2_cuadrada)}")
-
-    # La muestro como matriz
-    print(f"Mostrarla como matriz:\n")
-    print(img_2_cuadrada)
-
-    # Traspongo img_1_cuadrada
-    print("Transponer img_1_cuadrada y mostrarla como matriz:\n")
-    img_1_cuadrada_traspuesta=trasponer_matriz(img_1_cuadrada)
-    
-    # La imprimo
-    print(img_1_cuadrada_traspuesta)
-
-    # Genero una nueva imagen a partir de la traspuesta
-    crear_imagen_matriz('img_1_cuadrada_trapuesta.jpg', img_1_cuadrada_traspuesta)
-
-    # Traspongo img_2_cuadrada
-    print("Transponer img_2_cuadrada y mostrarla como matriz:\n")
-    img_2_cuadrada_traspuesta=trasponer_matriz(img_2_cuadrada)
-
-    # La imprimo
-    print(img_2_cuadrada_traspuesta)
-
-    # Genero una nueva imagen a partir de la traspuesta
-    crear_imagen_matriz('img_2_cuadrada_trapuesta.jpg', img_2_cuadrada_traspuesta)
-    
-    # Convierte la img_1_cuadrada a escala de grises
-    img_1_cuadrada_gris = convertir_a_grises('img_1_cuadrada_gris.jpg',img_1_cuadrada)
-
-    # Convierte la img_2_cuadrada a escala de grises
-    img_2_cuadrada_gris = convertir_a_grises('img_2_cuadrada_gris.jpg',img_2_cuadrada)
-
-    # Pasamos a calcular los determinantes
-    det_img_1_gris=calcular_determinante(img_1_cuadrada_gris)
-    det_img_2_gris=calcular_determinante(img_2_cuadrada_gris)
-    print(f'Determinante de img_1_cuadrada_gris.jpg es de {det_img_1_gris}')
-    print(f'Determinante de img_2_cuadrada_gris.jpg es de {det_img_2_gris}')
-
-    # Para que una matriz se invertible, su determinante debe ser distinto de 0
-    img_1_invertible = " si " if det_img_1_gris != 0 else " no"
-    img_2_invertible = " si " if det_img_2_gris != 0 else " no"
-
-    # Imprimimos si cada matriz es invertible o no
-    print(f"La matriz de la imagen img_1_cuadrada_gris.jpg {img_1_invertible} es invertible")
-    print(f"La matriz de la imagen img_2_cuadrada_gris.jpg {img_2_invertible} es invertible")
-
-    # Ahora pasamos a calcular la inversa, si es que tienen
-    if det_img_1_gris != 0:
-        inversa_img_1 = np.linalg.inv(img_1_cuadrada_gris)
-        print(f"La inversa de img_1_cuadrada_gris.jgp es {inversa_img_1}")
-    
-    if det_img_2_gris != 0:
-        inversa_img_2 = np.linalg.inv(img_2_cuadrada_gris)
-        print(f"La inversa de img_2_cuadrada_gris.jgp es {inversa_img_2}")
-
-    # Pasamos a multiplicar la matriz de grieses de la imagen 1 por un escalar a1 = 5
-    valor = 2
-    matriz_por_a1 = aplicar_contraste(f"img_1_por_{valor}.jpg", valor, img_1_cuadrada_gris )
-    print(f"Matriz resultante de la multiplicación por {valor} de la matriz de la img 1 {matriz_por_a1}")
- 
-    # Pasamos a multiplicar la matriz de grieses de la imagen 1 por un escalar a2 = 0.5
-    valor = 0.9
-    matriz_por_a2 = aplicar_contraste(f"img_2_por_{valor}.jpg", valor, img_2_cuadrada_gris )
-    print(f"Matriz resultante de la multiplicación por {valor} de la matriz de la img 2 {matriz_por_a2}")
-    
-    """ Cuanto más se aleja el valor a de 1 se distorsiona la imagen original
-     perdiendose el contorno del objeto y su forma base
-
-     En el caso que 0 < a < 1 no se llega a formar la imagen, sino que se ven trazos 
-     de líneas en forma de diagonal
-     """
-    
-    # Ahora pasamos a comprobar que la multiplicación no es conmutativa
-    identidad = obtener_identidad(img_1_cuadrada_gris)
-
-    matriz_w = np.fliplr(identidad)
-
-    # El resultado de esta rotación es una rotación vertical
-    rotar_img(matriz_w, img_1_cuadrada_gris, "w_por_matriz.jpg")
+        # El resultado de esta rotación es una rotación vertical
+        rotar_img(matriz_w, img_1_cuadrada_gris, "w_por_matriz.jpg")
 
 
-    # Ahora hacemos la otra multiplicación, y da una rotación horizontal
-    rotar_img(img_1_cuadrada_gris, matriz_w, "matriz_por_w.jpg")
+        # Ahora hacemos la otra multiplicación, y da una rotación horizontal
+        rotar_img(img_1_cuadrada_gris, matriz_w, "matriz_por_w.jpg")
 
-    # Ahora obtenemos la matriz negativa, y generamos una imagen negativa
-    negativo_imagen(img_1_cuadrada_gris, "negativo_img_1_gris.jpg")
+        # Ahora obtenemos la matriz negativa, y generamos una imagen negativa
+        negativo_imagen(img_1_cuadrada_gris, "negativo_img_1_gris.jpg")
+
+        print("Fin del programa")
+    except Exception  as e:
+        print("Ocurrio un error en la ejecución del programa")
 
 run()
