@@ -272,7 +272,8 @@ def run():
         matriz_por_a2 = aplicar_contraste(f"img_2_por_{valor}.jpg", valor, img_2_cuadrada_gris )
         print(f"Matriz resultante de la multiplicación por {valor} de la matriz de la img 2 {matriz_por_a2}")
         
-        """ Cuanto más se aleja el valor a de 1 se distorsiona la imagen original
+        """ 
+        Cuanto más se aleja el valor a de 1 se distorsiona la imagen original
         perdiendose el contorno del objeto y su forma base
 
         En el caso que 0 < a < 1 no se llega a formar la imagen, sino que se ven trazos 
