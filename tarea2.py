@@ -133,33 +133,46 @@ def obtener_identidad(matriz):
     try:
         if matriz.ndim == 2 and matriz.shape[0] == matriz.shape[1]:
             return np.eye(matriz.shape[0])
+            
         
     except Exception as e:
         print("Algo falló al intentar encontrar la identidad:", str(e))
         return None
 
-# En proceso
-""" def rotar_img(matriz):
+# Se envían dos matrices que se multiplicaran, se crea una img y se guarda con
+# un cierto nombre
+def rotar_img(matriz1, matriz2, nombre):
     try:  
 
-        identidad = obtener_identidad(matriz)
-
-        matriz_anti_diagonal = np.fliplr(identidad)
-
-        matriz_res = np.dot()
+        # Hacemos la multplicación
+        matriz_res = np.dot(matriz1, matriz2)
 
         # Crear una nueva imagen a partir de la matriz en escala de grises
-        imagen_gris = Image.fromarray(matriz_normalizada, mode="L")
-
-        # Guardar la nueva imagen
-        imagen_gris.save(nombre)
-
-        return matriz_normalizada   
+        imagen_volteada_1 = Image.fromarray(matriz_res.astype(np.uint8), mode="L")
+        imagen_volteada_1.save(nombre)
+        return True   
     except Exception as e:
         print("Algo falló al aplicar el contraste:", str(e))
-        return None """
+        return False 
+
+# Recibe una matriz, crea el negativo de la matriz y guarda la imagen con el nombre pasado
+def negativo_imagen(matriz, nombre):
+    try:  
+
+        # Hacemos la resta
+        matriz_res = 255 - matriz
+
+        # Crear una nueva imagen a partir de la matriz en escala de grises
+        imagen_volteada_1 = Image.fromarray(matriz_res.astype(np.uint8), mode="L")
+        imagen_volteada_1.save(nombre)
+
+        return True   
+    except Exception as e:
+        print("Algo falló al aplicar el contraste:", str(e))
+        return False 
 
 def run():
+
     # Cargo las dos imagenes e imprimo sus tamaños
     ruta_1='img_python.jpg'
     ruta_2='img_rattlesnake.jpg'   
@@ -189,6 +202,7 @@ def run():
 
     # Imprimo su tamaño
     print(f"Tamaño de una de las matrices recortadas: {obtener_tamaño(img_2_cuadrada)}")
+
     # La muestro como matriz
     print(f"Mostrarla como matriz:\n")
     print(img_2_cuadrada)
@@ -196,28 +210,26 @@ def run():
     # Traspongo img_1_cuadrada
     print("Transponer img_1_cuadrada y mostrarla como matriz:\n")
     img_1_cuadrada_traspuesta=trasponer_matriz(img_1_cuadrada)
+    
     # La imprimo
     print(img_1_cuadrada_traspuesta)
+
     # Genero una nueva imagen a partir de la traspuesta
     crear_imagen_matriz('img_1_cuadrada_trapuesta.jpg', img_1_cuadrada_traspuesta)
 
     # Traspongo img_2_cuadrada
     print("Transponer img_2_cuadrada y mostrarla como matriz:\n")
     img_2_cuadrada_traspuesta=trasponer_matriz(img_2_cuadrada)
+
     # La imprimo
     print(img_2_cuadrada_traspuesta)
+
     # Genero una nueva imagen a partir de la traspuesta
     crear_imagen_matriz('img_2_cuadrada_trapuesta.jpg', img_2_cuadrada_traspuesta)
     
-    print()
-    print()
-    print()
-    print()
-    print()
-    print()
-
     # Convierte la img_1_cuadrada a escala de grises
     img_1_cuadrada_gris = convertir_a_grises('img_1_cuadrada_gris.jpg',img_1_cuadrada)
+
     # Convierte la img_2_cuadrada a escala de grises
     img_2_cuadrada_gris = convertir_a_grises('img_2_cuadrada_gris.jpg',img_2_cuadrada)
 
@@ -261,10 +273,19 @@ def run():
      de líneas en forma de diagonal
      """
     
-    # Generamos una matriz de identidad para la imagen 1
-    identidad_1 = obtener_identidad(img_1_cuadrada_gris)
+    # Ahora pasamos a comprobar que la multiplicación no es conmutativa
+    identidad = obtener_identidad(img_1_cuadrada_gris)
+
+    matriz_w = np.fliplr(identidad)
+
+    # El resultado de esta rotación es una rotación vertical
+    rotar_img(matriz_w, img_1_cuadrada_gris, "w_por_matriz.jpg")
 
 
+    # Ahora hacemos la otra multiplicación, y da una rotación horizontal
+    rotar_img(img_1_cuadrada_gris, matriz_w, "matriz_por_w.jpg")
 
+    # Ahora obtenemos la matriz negativa, y generamos una imagen negativa
+    negativo_imagen(img_1_cuadrada_gris, "negativo_img_1_gris.jpg")
 
 run()
