@@ -3,6 +3,7 @@ import skimage
 import cv2
 import os
 import matplotlib.pyplot as plt
+from PIL import Image
 
 def recortar_imagen_v2(ruta_img: str, ruta_img_crop: str, x_inicial: int, x_final: int, y_inicial: int, y_final: int)-> None:
     """
@@ -80,26 +81,98 @@ def crear_imagen_matriz(nombre, matriz):
 # Funcion para convertir a escala de grises.  
 def convertir_a_grises(nombre, matriz):
     try:
-        imagen_gris = cv2.cvtColor(matriz, cv2.COLOR_BGR2GRAY)
-        cv2.imwrite(nombre, imagen_gris)
+        # Calcular el promedio simple de los valores RGB para cada píxel
+        A_gris = np.mean(matriz, axis=2)
 
+        # Asegurarse de que los valores estén en el rango [0, 255] y convertir a enteros
+        A_gris_normalizada = A_gris.astype(np.uint8)
+        #A_gris_normalizada = np.clip(A_gris, 0, 255)
+
+        # Crear una nueva imagen a partir de la matriz en escala de grises
+        imagen_gris = Image.fromarray(A_gris_normalizada)
+
+        # Guardar la nueva imagen
+        imagen_gris.save(nombre)
+
+        return A_gris_normalizada
     except Exception as e:
-        print("Algo falló al convertir la imagen", str(3))
+        print("Algo falló al convertir la imagen", str(e))
 
-# Funcion para calcular el detemrinante
+# Funcion para calcular el detemrinante    
 def calcular_determinante(matriz): 
     # Verificar si la matriz es cuadrada
-    print(f"{matriz.ndim} {matriz.shape[0] == matriz.shape[1]}")
     try:        
-        return np.linalg.det([[np.asarray(matriz.shape[0])],[
-                               np.asarray(matriz.shape[1])]])
+        if matriz.ndim == 2 and matriz.shape[0] == matriz.shape[1]:
+            return np.linalg.det(matriz)
         
     except Exception as e:
         print("Algo falló al calcular el determinante:", str(e))
         return None
 
+# Multiplica por un escalar una matriz que corresponde a una img y guarda lo nuevo
+def aplicar_contraste(nombre, valor, matriz):
+    try:  
+        matriz_por_a = valor * matriz
+
+        matriz_normalizada = np.clip(matriz_por_a, 0, 255)
+
+        # Crear una nueva imagen a partir de la matriz en escala de grises
+        imagen_gris = Image.fromarray(matriz_normalizada, mode="L")
+
+        # Guardar la nueva imagen
+        imagen_gris.save(nombre)
+
+        return matriz_normalizada   
+    except Exception as e:
+        print("Algo falló al aplicar el contraste:", str(e))
+        return None
+    
+
+
+def obtener_identidad(matriz):
+    try:
+        if matriz.ndim == 2 and matriz.shape[0] == matriz.shape[1]:
+            return np.eye(matriz.shape[0])
+            
+        
+    except Exception as e:
+        print("Algo falló al intentar encontrar la identidad:", str(e))
+        return None
+
+# Se envían dos matrices que se multiplicaran, se crea una img y se guarda con
+# un cierto nombre
+def rotar_img(matriz1, matriz2, nombre):
+    try:  
+
+        # Hacemos la multplicación
+        matriz_res = np.dot(matriz1, matriz2)
+
+        # Crear una nueva imagen a partir de la matriz en escala de grises
+        imagen_volteada_1 = Image.fromarray(matriz_res.astype(np.uint8), mode="L")
+        imagen_volteada_1.save(nombre)
+        return True   
+    except Exception as e:
+        print("Algo falló al aplicar el contraste:", str(e))
+        return False 
+
+# Recibe una matriz, crea el negativo de la matriz y guarda la imagen con el nombre pasado
+def negativo_imagen(matriz, nombre):
+    try:  
+
+        # Hacemos la resta
+        matriz_res = 255 - matriz
+
+        # Crear una nueva imagen a partir de la matriz en escala de grises
+        imagen_volteada_1 = Image.fromarray(matriz_res.astype(np.uint8), mode="L")
+        imagen_volteada_1.save(nombre)
+
+        return True   
+    except Exception as e:
+        print("Algo falló al aplicar el contraste:", str(e))
+        return False 
 
 def run():
+
     # Cargo las dos imagenes e imprimo sus tamaños
     ruta_1='img_python.jpg'
     ruta_2='img_rattlesnake.jpg'   
@@ -129,41 +202,90 @@ def run():
 
     # Imprimo su tamaño
     print(f"Tamaño de una de las matrices recortadas: {obtener_tamaño(img_2_cuadrada)}")
+
     # La muestro como matriz
     print(f"Mostrarla como matriz:\n")
     print(img_2_cuadrada)
 
-
     # Traspongo img_1_cuadrada
     print("Transponer img_1_cuadrada y mostrarla como matriz:\n")
     img_1_cuadrada_traspuesta=trasponer_matriz(img_1_cuadrada)
+    
     # La imprimo
     print(img_1_cuadrada_traspuesta)
+
     # Genero una nueva imagen a partir de la traspuesta
     crear_imagen_matriz('img_1_cuadrada_trapuesta.jpg', img_1_cuadrada_traspuesta)
 
     # Traspongo img_2_cuadrada
     print("Transponer img_2_cuadrada y mostrarla como matriz:\n")
     img_2_cuadrada_traspuesta=trasponer_matriz(img_2_cuadrada)
+
     # La imprimo
     print(img_2_cuadrada_traspuesta)
+
     # Genero una nueva imagen a partir de la traspuesta
     crear_imagen_matriz('img_2_cuadrada_trapuesta.jpg', img_2_cuadrada_traspuesta)
     
     # Convierte la img_1_cuadrada a escala de grises
-    convertir_a_grises('img_1_cuadrada_gris.jpg',img_1_cuadrada)
+    img_1_cuadrada_gris = convertir_a_grises('img_1_cuadrada_gris.jpg',img_1_cuadrada)
+
     # Convierte la img_2_cuadrada a escala de grises
-    convertir_a_grises('img_2_cuadrada_gris.jpg',img_2_cuadrada)
+    img_2_cuadrada_gris = convertir_a_grises('img_2_cuadrada_gris.jpg',img_2_cuadrada)
 
-    # Cargo las imagenes de escala de grises
-    img_1_cuadrada_gris=cargar_imagen('img_1_cuadrada_gris.jpg')
-    img_2_cuadrada_gris=cargar_imagen('img_2_cuadrada_gris.jpg')
-    print("Tamaño:",obtener_tamaño(img_1_cuadrada_gris))
-    print("Tamaño:",obtener_tamaño(img_2_cuadrada_gris))
-
+    # Pasamos a calcular los determinantes
     det_img_1_gris=calcular_determinante(img_1_cuadrada_gris)
     det_img_2_gris=calcular_determinante(img_2_cuadrada_gris)
     print(f'Determinante de img_1_cuadrada_gris.jpg es de {det_img_1_gris}')
     print(f'Determinante de img_2_cuadrada_gris.jpg es de {det_img_2_gris}')
+
+    # Para que una matriz se invertible, su determinante debe ser distinto de 0
+    img_1_invertible = " si " if det_img_1_gris != 0 else " no"
+    img_2_invertible = " si " if det_img_2_gris != 0 else " no"
+
+    # Imprimimos si cada matriz es invertible o no
+    print(f"La matriz de la imagen img_1_cuadrada_gris.jpg {img_1_invertible} es invertible")
+    print(f"La matriz de la imagen img_2_cuadrada_gris.jpg {img_2_invertible} es invertible")
+
+    # Ahora pasamos a calcular la inversa, si es que tienen
+    if det_img_1_gris != 0:
+        inversa_img_1 = np.linalg.inv(img_1_cuadrada_gris)
+        print(f"La inversa de img_1_cuadrada_gris.jgp es {inversa_img_1}")
+    
+    if det_img_2_gris != 0:
+        inversa_img_2 = np.linalg.inv(img_2_cuadrada_gris)
+        print(f"La inversa de img_2_cuadrada_gris.jgp es {inversa_img_2}")
+
+    # Pasamos a multiplicar la matriz de grieses de la imagen 1 por un escalar a1 = 5
+    valor = 2
+    matriz_por_a1 = aplicar_contraste(f"img_1_por_{valor}.jpg", valor, img_1_cuadrada_gris )
+    print(f"Matriz resultante de la multiplicación por {valor} de la matriz de la img 1 {matriz_por_a1}")
+ 
+    # Pasamos a multiplicar la matriz de grieses de la imagen 1 por un escalar a2 = 0.5
+    valor = 0.9
+    matriz_por_a2 = aplicar_contraste(f"img_2_por_{valor}.jpg", valor, img_2_cuadrada_gris )
+    print(f"Matriz resultante de la multiplicación por {valor} de la matriz de la img 2 {matriz_por_a2}")
+    
+    """ Cuanto más se aleja el valor a de 1 se distorsiona la imagen original
+     perdiendose el contorno del objeto y su forma base
+
+     En el caso que 0 < a < 1 no se llega a formar la imagen, sino que se ven trazos 
+     de líneas en forma de diagonal
+     """
+    
+    # Ahora pasamos a comprobar que la multiplicación no es conmutativa
+    identidad = obtener_identidad(img_1_cuadrada_gris)
+
+    matriz_w = np.fliplr(identidad)
+
+    # El resultado de esta rotación es una rotación vertical
+    rotar_img(matriz_w, img_1_cuadrada_gris, "w_por_matriz.jpg")
+
+
+    # Ahora hacemos la otra multiplicación, y da una rotación horizontal
+    rotar_img(img_1_cuadrada_gris, matriz_w, "matriz_por_w.jpg")
+
+    # Ahora obtenemos la matriz negativa, y generamos una imagen negativa
+    negativo_imagen(img_1_cuadrada_gris, "negativo_img_1_gris.jpg")
 
 run()
