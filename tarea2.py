@@ -56,9 +56,9 @@ def obtener_tamaño(imagen):
 def obtener_tamaño_cuadrado(tamaño_1, tamaño_2):
     if tamaño_1 is not None and tamaño_2 is not None:
         # Obtiene el tamaño minimo de la fila de las dos imagenes
-        min_filas=min(tamaño_1[0],tamaño_2[0])
+        min_filas = min(tamaño_1[0],tamaño_2[0])
         # Obtiene el tamaño minimo de la fila de las dos imagenes
-        min_columnas=min(tamaño_1[1],tamaño_2[1])
+        min_columnas = min(tamaño_1[1],tamaño_2[1])
         # Obtiene el tamaño minimo entre las filas y columnas
         return min(min_filas, min_columnas)
 
@@ -180,13 +180,13 @@ def run():
     try:
 
         # Cargo las dos imagenes e imprimo sus tamaños
-        ruta_1='img_python.jpg'
-        ruta_2='img_rattlesnake.jpg'   
-        img_1=cargar_imagen(ruta_1)
-        tamaño_1=obtener_tamaño(img_1)
+        ruta_1 = 'img_python.jpg'
+        ruta_2 = 'img_rattlesnake.jpg'   
+        img_1 = cargar_imagen(ruta_1)
+        tamaño_1 = obtener_tamaño(img_1)
         print(f"Tamaño {ruta_1} es de {tamaño_1}")
-        img_2=cargar_imagen(ruta_2)
-        tamaño_2=obtener_tamaño(img_2)
+        img_2 = cargar_imagen(ruta_2)
+        tamaño_2 = obtener_tamaño(img_2)
         print(f"Tamaño {ruta_2} es de {tamaño_2}")
         
         # Obtiene el tamaño minimo de la fila de las dos imagenes
@@ -203,8 +203,8 @@ def run():
         # es necesario que estás tengan la misma dimensión. Por está razón las hacemos cuadradas.
 
         # Selecciono una de las imagenes recortadas y la cargo
-        img_2_cuadrada=cargar_imagen('img_2_cuadrada.jpg')
-        img_1_cuadrada=cargar_imagen('img_1_cuadrada.jpg')
+        img_2_cuadrada = cargar_imagen('img_2_cuadrada.jpg')
+        img_1_cuadrada = cargar_imagen('img_1_cuadrada.jpg')
 
         # Imprimo su tamaño
         print(f"Tamaño de una de las matrices recortadas: {obtener_tamaño(img_2_cuadrada)}")
