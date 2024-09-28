@@ -54,13 +54,19 @@ def obtener_tamaño(imagen):
 
 # Funcion para obtener el minimo tamaño necesario para que ambas imagenes tengan el mismo tamaño y sean cuadradas
 def obtener_tamaño_cuadrado(tamaño_1, tamaño_2):
-    if tamaño_1 is not None and tamaño_2 is not None:
-        # Obtiene el tamaño minimo de la fila de las dos imagenes
-        min_filas = min(tamaño_1[0],tamaño_2[0])
-        # Obtiene el tamaño minimo de la fila de las dos imagenes
-        min_columnas = min(tamaño_1[1],tamaño_2[1])
-        # Obtiene el tamaño minimo entre las filas y columnas
-        return min(min_filas, min_columnas)
+    try:
+        # Valida que las imagenes no sean nulas y que tengan tamaño valido  
+        if tamaño_1 is not None and tamaño_2 is not None:
+            # Obtiene el tamaño minimo de la fila de las dos imagenes
+            min_filas = min(tamaño_1[0],tamaño_2[0])
+            # Obtiene el tamaño minimo de la fila de las dos imagenes
+            min_columnas = min(tamaño_1[1],tamaño_2[1])
+            # Obtiene el tamaño minimo entre las filas y columnas
+            return min(min_filas, min_columnas)
+        return None
+    except Exception as e:
+        print("Algó falló al intentar obtener el tamaño cuadrado", str(e))
+        return None
 
 # Funcion para transponer las filas y columnas de la matriz
 def trasponer_matriz(img):
@@ -194,10 +200,10 @@ def run():
         print(f"Imagen cuadrada de n = {tamaño_n}")
 
         # Recorto la primera imagen
-        recortar_imagen_v2(ruta_1, 'img_1_cuadrada.jpg',0,tamaño_n,0,tamaño_n)
+        recortar_imagen_v2(ruta_1, 'img_1_cuadrada.jpg', 0, tamaño_n, 0, tamaño_n)
 
         # Recorto la segunda imagen
-        recortar_imagen_v2(ruta_2, 'img_2_cuadrada.jpg',0,tamaño_n,0,tamaño_n)
+        recortar_imagen_v2(ruta_2, 'img_2_cuadrada.jpg', 0, tamaño_n, 0, tamaño_n)
 
         # Para realizar ciertas operaciones entre las dos imagenes, como multiplicación de matrices, 
         # es necesario que estás tengan la misma dimensión. Por está razón las hacemos cuadradas.
