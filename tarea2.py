@@ -93,7 +93,7 @@ def convertir_a_grises(nombre, matriz):
         # Calculamos el promedio simple de los valores RGB para cada píxel
         matriz_gris = np.mean(matriz, axis=2)
 
-        # Nos aseguramos de que los valores estén en el rango [0, 255] y convertir a enteros
+        # Nos aseguramos de que los valores estén en el rango [0, 255] 
         matriz_gris_normalizada = matriz_gris.astype(np.uint8)
 
         # Creamos una nueva imagen a partir de la matriz en escala de grises
@@ -121,7 +121,7 @@ def aplicar_contraste(nombre, valor, matriz):
     try:  
         matriz_por_a = valor * matriz
 
-        matriz_normalizada = np.clip(matriz_por_a, 0, 255)
+        matriz_normalizada =  np.clip(matriz_por_a, 0, 255).astype(np.uint8)
 
         # Creamos una nueva imagen a partir de la matriz en escala de grises
         imagen_gris = Image.fromarray(matriz_normalizada, mode="L")
@@ -273,13 +273,13 @@ def run():
             print(f"La inversa de img_2_cuadrada_gris.jgp es {inversa_img_2}")
 
         # Pasamos a multiplicar la matriz de grieses de la imagen 1 por un escalar a1 = 5
-        valor = 2
-        matriz_por_a1 = aplicar_contraste(f"img_1_por_{valor}.jpg", valor, img_1_cuadrada_gris )
+        valor = 5
+        matriz_por_a1 = aplicar_contraste(f"img_1_constraste_{valor}.jpg", valor, img_1_cuadrada_gris )
         print(f"Matriz resultante de la multiplicación por {valor} de la matriz de la img 1 {matriz_por_a1}")
     
         # Pasamos a multiplicar la matriz de grieses de la imagen 1 por un escalar a2 = 0.5
-        valor = 0.9
-        matriz_por_a2 = aplicar_contraste(f"img_2_por_{valor}.jpg", valor, img_2_cuadrada_gris )
+        valor = 0.5
+        matriz_por_a2 = aplicar_contraste(f"img_1_contraste_{valor}.jpg", valor, img_1_cuadrada_gris )
         print(f"Matriz resultante de la multiplicación por {valor} de la matriz de la img 2 {matriz_por_a2}")
         
         """ 
@@ -295,11 +295,11 @@ def run():
 
         matriz_w = np.fliplr(identidad)
 
-        # El resultado de esta rotación es una rotación vertical
+        # El resultado de esta rotación es una reflexión vertical
         rotar_img(matriz_w, img_1_cuadrada_gris, "w_por_matriz.jpg")
 
 
-        # Ahora hacemos la otra multiplicación, y da una rotación horizontal
+        # Ahora hacemos la otra multiplicación, y da una reflexión horizontal
         rotar_img(img_1_cuadrada_gris, matriz_w, "matriz_por_w.jpg")
 
         # Ahora obtenemos la matriz negativa, y generamos una imagen negativa
