@@ -278,7 +278,7 @@ def run():
         print(f"Matriz resultante de la multiplicación por {valor} de la matriz de la img 1 {matriz_por_a1}")
     
         # Pasamos a multiplicar la matriz de grieses de la imagen 1 por un escalar a2 = 0.5
-        valor = 0.5
+        valor = 0.1
         matriz_por_a2 = aplicar_contraste(f"img_1_contraste_{valor}.jpg", valor, img_1_cuadrada_gris )
         print(f"Matriz resultante de la multiplicación por {valor} de la matriz de la img 2 {matriz_por_a2}")
         
@@ -286,8 +286,8 @@ def run():
         Cuanto más se aleja el valor a de 1 se distorsiona la imagen original
         perdiendose el contorno del objeto y su forma base
 
-        En el caso que 0 < a < 1 no se llega a formar la imagen, sino que se ven trazos 
-        de líneas en forma de diagonal
+        En el caso que 0 < a < 1 se va oscureciendo cada vez más la imagen a medida que se acerca 
+        el valor a o alpha a 0
         """
         
         # Ahora pasamos a comprobar que la multiplicación no es conmutativa
